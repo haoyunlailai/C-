@@ -8,6 +8,8 @@ from tkinter import ttk
 from config import APP_NAME, APP_VERSION
 from ui.temp_clean_page import TempCleanPage
 from ui.disk_scan_page import DiskScanPage
+from ui.duplicate_page import DuplicatePage
+from ui.app_cache_page import AppCachePage
 
 
 class MainWindow:
@@ -72,9 +74,13 @@ class MainWindow:
 
         self.temp_page = TempCleanPage(notebook)
         self.disk_scan_page = DiskScanPage(notebook)
+        self.duplicate_page = DuplicatePage(notebook)
+        self.app_cache_page = AppCachePage(notebook)
 
         notebook.add(self.temp_page.frame, text="  临时文件清理  ")
         notebook.add(self.disk_scan_page.frame, text="  磁盘扫描  ")
+        notebook.add(self.duplicate_page.frame, text="  重复文件  ")
+        notebook.add(self.app_cache_page.frame, text="  应用缓存  ")
 
         status_bar = ttk.Frame(self.root, padding=(15, 4))
         status_bar.pack(fill=tk.X, side=tk.BOTTOM)

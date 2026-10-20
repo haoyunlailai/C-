@@ -79,6 +79,7 @@ BROWSER_CACHE_DIRS = {
 
 LARGE_FILE_THRESHOLD_MB = 100
 DEFAULT_SCAN_DIRS = ["C:\\Users"]
+DEFAULT_DUPLICATE_THRESHOLD_MB = 1
 
 # ============================================================
 # 清理建议规则
@@ -100,17 +101,59 @@ SAFE_TO_CLEAN_CATEGORIES = [
 ]
 
 # ============================================================
-# 应用缓存扫描目标（第二阶段）
+# 应用缓存扫描目标
 # ============================================================
 
-APP_CACHE_DIRS = {
-    "WeChat": os.path.join(
-        os.environ.get("APPDATA", ""), "..", "Local", "WeChat Files",
-    ),
-    "QQ": os.path.join(
-        os.environ.get("APPDATA", ""), "..", "Local", "Tencent", "QQ",
-    ),
-    "DingTalk": os.path.join(
-        os.environ.get("APPDATA", ""), "..", "Local", "DingTalk",
-    ),
+APP_CACHE_CONFIG = {
+    "WeChat": {
+        "display_name": "微信",
+        "base_dirs": [
+            os.path.join(os.environ.get("USERPROFILE", ""), "Documents", "WeChat Files"),
+            os.path.join(os.environ.get("APPDATA", ""), "Tencent", "WeChat"),
+        ],
+        "cache_subdirs": [
+            "FileStorage/Cache",
+            "FileStorage/Image",
+            "FileStorage/Video",
+            "FileStorage/MsgAttach",
+            "XPlugin/Plugins",
+        ],
+    },
+    "QQ": {
+        "display_name": "QQ",
+        "base_dirs": [
+            os.path.join(os.environ.get("USERPROFILE", ""), "Documents", "Tencent Files"),
+            os.path.join(os.environ.get("APPDATA", ""), "Tencent", "QQ"),
+        ],
+        "cache_subdirs": [
+            "Image",
+            "Video",
+            "FileRecv/MobileFile",
+        ],
+    },
+    "DingTalk": {
+        "display_name": "钉钉",
+        "base_dirs": [
+            os.path.join(os.environ.get("APPDATA", ""), "DingTalk"),
+            os.path.join(os.environ.get("LOCALAPPDATA", ""), "DingTalk"),
+        ],
+        "cache_subdirs": [
+            "Cache",
+            "Code Cache",
+            "GPUCache",
+            "image",
+        ],
+    },
+    "QQBrowser": {
+        "display_name": "QQ浏览器",
+        "base_dirs": [
+            os.path.join(os.environ.get("LOCALAPPDATA", ""), "Tencent", "QQBrowser"),
+        ],
+        "cache_subdirs": [
+            "User Data/Default/Cache",
+            "User Data/Default/Code Cache",
+            "User Data/Default/GPUCache",
+            "User Data/Default/Service Worker/CacheStorage",
+        ],
+    },
 }

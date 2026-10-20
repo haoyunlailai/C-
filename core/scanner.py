@@ -163,7 +163,7 @@ class TempFileScanner:
                     full = os.path.join(root, d)
                     if not self.safety.should_skip(full):
                         dirs.append(full)
-        except PermissionError:
+        except (PermissionError, FileNotFoundError, OSError):
             pass
         return dirs
 
@@ -180,7 +180,7 @@ class TempFileScanner:
                     result.compute_suggestion()
                     result.compute_last_used()
                     report.add(result)
-        except PermissionError:
+        except (PermissionError, FileNotFoundError, OSError):
             pass
 
 
@@ -230,7 +230,7 @@ class LargeFileScanner:
                     full = os.path.join(root, d)
                     if not self.safety.should_skip(full):
                         dirs.append(full)
-        except PermissionError:
+        except (PermissionError, FileNotFoundError, OSError):
             pass
         return dirs
 
@@ -248,5 +248,5 @@ class LargeFileScanner:
                         result.compute_suggestion()
                         result.compute_last_used()
                         report.add(result)
-        except PermissionError:
+        except (PermissionError, FileNotFoundError, OSError):
             pass

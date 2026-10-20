@@ -6,6 +6,8 @@ import tkinter as tk
 from tkinter import ttk, messagebox
 import threading
 import time
+import os
+import subprocess
 
 from core.scanner import TempFileScanner, ScanReport
 from core.cleaner import FileCleaner
@@ -106,6 +108,7 @@ class TempCleanPage:
         scrollbar.pack(fill=tk.Y, side=tk.RIGHT)
 
         self.tree.bind("<ButtonRelease-1>", self._on_tree_click)
+        self.tree.bind("<Double-1>", self._on_tree_doubleclick)
 
     def _on_tree_click(self, event):
         col = self.tree.identify_column(event.x)
@@ -115,6 +118,14 @@ class TempCleanPage:
                 current = self.tree.set(item, "check")
                 new_val = CHECKBOX_UNCHECKED if current == CHECKBOX_CHECKED else CHECKBOX_CHECKED
                 self.tree.set(item, "check", new_val)
+
+    def _on_tree_doubleclick(self, event):
+        item = self.tree.identify_row(event.y)
+        if not item:
+            return
+        filepath = self.tree.set(item, "path")
+        if filepath and os.path.exists(filepath):
+            subprocess.Popen(f'explorer /select,"{filepath}"')
 
     def _select_all(self):
         for item in self.tree.get_children():
