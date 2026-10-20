@@ -7,6 +7,7 @@ from tkinter import ttk, messagebox
 import threading
 import subprocess
 import time
+import os
 
 from core.software_scanner import SoftwareScanner, SoftwareInfo
 from core.utils import format_file_size
@@ -75,7 +76,7 @@ class SoftwareUninstallPage:
         tree_frame.pack(fill=tk.BOTH, expand=True)
 
         columns = ("check", "name", "version", "publisher", "install_date",
-                   "size", "last_used", "status")
+                   "size", "last_used", "status", "install_location")
         self.tree = ttk.Treeview(tree_frame, columns=columns, show="headings",
                                  selectmode="extended")
 
@@ -87,15 +88,17 @@ class SoftwareUninstallPage:
         self.tree.heading("size", text="占用空间")
         self.tree.heading("last_used", text="最近活动")
         self.tree.heading("status", text="状态")
+        self.tree.heading("install_location", text="安装位置")
 
         self.tree.column("check", width=32, minwidth=32, anchor=tk.CENTER, stretch=False)
-        self.tree.column("name", width=240, anchor=tk.W)
-        self.tree.column("version", width=90, anchor=tk.CENTER)
-        self.tree.column("publisher", width=160, anchor=tk.W)
-        self.tree.column("install_date", width=90, anchor=tk.CENTER)
-        self.tree.column("size", width=90, anchor=tk.E)
-        self.tree.column("last_used", width=100, anchor=tk.CENTER)
-        self.tree.column("status", width=120, anchor=tk.CENTER)
+        self.tree.column("name", width=220, anchor=tk.W)
+        self.tree.column("version", width=80, anchor=tk.CENTER)
+        self.tree.column("publisher", width=140, anchor=tk.W)
+        self.tree.column("install_date", width=85, anchor=tk.CENTER)
+        self.tree.column("size", width=85, anchor=tk.E)
+        self.tree.column("last_used", width=95, anchor=tk.CENTER)
+        self.tree.column("status", width=115, anchor=tk.CENTER)
+        self.tree.column("install_location", width=320, anchor=tk.W)
 
         vsb = ttk.Scrollbar(tree_frame, orient=tk.VERTICAL, command=self.tree.yview)
         hsb = ttk.Scrollbar(tree_frame, orient=tk.HORIZONTAL, command=self.tree.xview)
@@ -108,6 +111,7 @@ class SoftwareUninstallPage:
         tree_frame.grid_columnconfigure(0, weight=1)
 
         self.tree.bind("<ButtonRelease-1>", self._on_tree_click)
+        self.tree.bind("<Double-1>", self._on_tree_double_click)
 
         legend = ttk.Frame(self.frame)
         legend.pack(fill=tk.X, pady=(6, 0))
@@ -175,6 +179,7 @@ class SoftwareUninstallPage:
             format_file_size(sw.estimated_size) if sw.estimated_size else "-",
             sw.last_used_display,
             status,
+            sw.install_location or "-",
         )
         tags = ("unused",) if sw.is_unused else ()
         item_id = self.tree.insert("", tk.END, values=values, tags=tags)
@@ -204,6 +209,20 @@ class SoftwareUninstallPage:
         current = self.tree.set(item, "check")
         new_val = CHECKBOX_UNCHECKED if current == CHECKBOX_CHECKED else CHECKBOX_CHECKED
         self.tree.set(item, "check", new_val)
+
+    def _on_tree_double_click(self, event):
+        item = self.tree.identify_row(event.y)
+        if not item:
+            return
+        sw = self._item_map.get(item)
+        if not sw or not sw.install_location:
+            return
+        if not os.path.isdir(sw.install_location):
+            return
+        try:
+            subprocess.Popen(f'explorer "{sw.install_location}"')
+        except (OSError, subprocess.SubprocessError):
+            pass
 
     def _select_all(self):
         for item in self.tree.get_children():

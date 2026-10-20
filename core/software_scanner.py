@@ -145,11 +145,15 @@ class SoftwareScanner:
         install_date = self._get_value(subkey, "InstallDate")
         install_location = self._get_value(subkey, "InstallLocation")
         uninstall_string = self._get_value(subkey, "UninstallString")
+        display_icon = self._get_value(subkey, "DisplayIcon")
         size_str = self._get_value(subkey, "EstimatedSize")
         try:
             size_kb = int(size_str) if size_str else 0
         except ValueError:
             size_kb = 0
+
+        if not install_location:
+            install_location = self._infer_install_dir(display_icon, uninstall_string)
 
         return SoftwareInfo(
             name=name,
@@ -172,6 +176,32 @@ class SoftwareScanner:
             if hint in name_l:
                 return True
         return False
+
+    @staticmethod
+    def _infer_install_dir(display_icon: str, uninstall_string: str) -> str:
+        """从 DisplayIcon 或 UninstallString 反推安装目录"""
+        for raw in (display_icon, uninstall_string):
+            if not raw:
+                continue
+            path = raw.strip()
+            if not path:
+                continue
+            if path.startswith("{") and path.endswith("}"):
+                continue
+            if path.lower().startswith("msiexec"):
+                continue
+            path = path.strip('"')
+            for sep in (",", " ",):
+                if sep in path and path.count(sep) == 1 and sep == ",":
+                    path = path.split(sep)[0].strip()
+                    break
+            if path.lower().endswith((".exe", ".msi", ".bat", ".cmd")):
+                path = os.path.dirname(path)
+            elif "." in os.path.basename(path):
+                path = os.path.dirname(path)
+            if path and os.path.isdir(path):
+                return path
+        return ""
 
     @staticmethod
     def _get_latest_activity_ts(install_location: str) -> float:
