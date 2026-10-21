@@ -4,6 +4,7 @@ C盘清理工具 - 软件卸载管理引擎
 """
 
 import os
+import re
 import time
 import winreg
 from dataclasses import dataclass
@@ -50,7 +51,9 @@ _REGISTRY_KEYS = [
      r"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall"),
 ]
 
-_SYSTEM_PUBLISHER_HINTS = ("microsoft", "windows", "intel", "amd", "nvidia", "realtek")
+_SYSTEM_PUBLISHER_HINTS = (
+    "microsoft", "windows", "intel", "amd", "advanced micro devices", "nvidia", "realtek",
+)
 _SYSTEM_NAME_HINTS = (
     "update for", "security update", "service pack", "visual c++ redistributable",
     "visual c++ ", ".net ", "windows ", "msi ", "microsoft ", "kb",
@@ -186,15 +189,23 @@ class SoftwareScanner:
             path = raw.strip()
             if not path:
                 continue
+            if path.startswith('"'):
+                end_quote = path.find('"', 1)
+                path = path[1:end_quote] if end_quote != -1 else path[1:]
+            else:
+                # DisplayIcon 可能形如 C:\App\app.exe,0
+                path = re.sub(r",\s*-?\d+\s*$", "", path)
+                # UninstallString 可能附带 /S、--silent 等参数
+                match = re.match(r"(?i)^(.+?\.(?:exe|msi|bat|cmd))(?:\s+.*)?$", path)
+                if match:
+                    path = match.group(1)
+            path = path.strip().strip('"')
+            if not path:
+                continue
             if path.startswith("{") and path.endswith("}"):
                 continue
-            if path.lower().startswith("msiexec"):
+            if os.path.basename(path).lower().startswith("msiexec"):
                 continue
-            path = path.strip('"')
-            for sep in (",", " ",):
-                if sep in path and path.count(sep) == 1 and sep == ",":
-                    path = path.split(sep)[0].strip()
-                    break
             if path.lower().endswith((".exe", ".msi", ".bat", ".cmd")):
                 path = os.path.dirname(path)
             elif "." in os.path.basename(path):

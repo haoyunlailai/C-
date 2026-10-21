@@ -54,6 +54,15 @@ pyinstaller "C盘清理助手.spec" --clean --noconfirm
 # 输出：dist/C盘清理助手.exe
 ```
 
+### 运行测试
+
+```bash
+pip install -r requirements-dev.txt
+pytest
+```
+
+126 个单元测试覆盖核心逻辑：Treemap 布局的面积守恒 / 无重叠 / 全节点放置、安装路径反推、系统组件识别、安全跳过规则、重复文件分组与扫描。全部测试无需启动 GUI，可在数秒内跑完。
+
 ## 使用说明
 
 1. **临时文件清理**：点击「开始扫描」→ 勾选分类 → 「清理选中项」。不建议删除的文件默认隐藏，可通过顶部开关显示。
@@ -69,6 +78,8 @@ pyinstaller "C盘清理助手.spec" --clean --noconfirm
 ├── main.py                      # 程序入口
 ├── config.py                    # 扫描路径、安全策略、应用缓存配置
 ├── requirements.txt
+├── requirements-dev.txt         # 测试依赖（pytest）
+├── pytest.ini
 ├── C盘清理助手.spec             # PyInstaller 打包配置
 ├── core/
 │   ├── scanner.py               # 临时文件 / 大文件扫描
@@ -86,6 +97,13 @@ pyinstaller "C盘清理助手.spec" --clean --noconfirm
 │   ├── app_cache_page.py
 │   ├── software_uninstall_page.py
 │   └── treemap_page.py
+├── tests/                       # pytest 单元测试
+│   ├── test_treemap_layout.py
+│   ├── test_software_scanner.py
+│   ├── test_scanner.py
+│   ├── test_duplicate_scanner.py
+│   ├── test_treemap_scanner.py
+│   └── test_utils.py
 └── docs/screenshots/
 ```
 
