@@ -55,7 +55,7 @@ pyinstaller "C盘清理助手.spec" --clean --noconfirm
 # 输出：dist/C盘清理助手.exe
 ```
 
-推送 `v*` 标签会触发 GitHub Actions：自动运行测试、构建 exe，并更新 Releases 中的下载附件。
+推送 `v*` 标签会触发 GitHub Actions：自动运行测试、构建 exe，并更新 Releases 中的下载附件与发布说明。
 
 ### 运行测试
 
