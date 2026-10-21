@@ -8,6 +8,7 @@ dist/
 build/
 *.egg
 *.spec
+!C盘清理助手.spec
 
 # Virtual environment
 venv/

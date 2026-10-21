@@ -1,0 +1,56 @@
+# -*- mode: python ; coding: utf-8 -*-
+
+
+a = Analysis(
+    ['main.py'],
+    pathex=[],
+    binaries=[],
+    datas=[],
+    hiddenimports=[
+        'send2trash',
+        'core.software_scanner',
+        'core.treemap_scanner',
+        'core.app_cache_scanner',
+        'core.duplicate_scanner',
+        'core.scanner',
+        'core.cleaner',
+        'core.utils',
+        'ui.software_uninstall_page',
+        'ui.treemap_page',
+        'ui.app_cache_page',
+        'ui.duplicate_page',
+        'ui.disk_scan_page',
+        'ui.large_file_page',
+        'ui.temp_clean_page',
+        'ui.main_window',
+        'config',
+    ],
+    hookspath=[],
+    hooksconfig={},
+    runtime_hooks=[],
+    excludes=[],
+    noarchive=False,
+    optimize=0,
+)
+pyz = PYZ(a.pure)
+
+exe = EXE(
+    pyz,
+    a.scripts,
+    a.binaries,
+    a.datas,
+    [],
+    name='C盘清理助手',
+    debug=False,
+    bootloader_ignore_signals=False,
+    strip=False,
+    upx=True,
+    upx_exclude=[],
+    runtime_tmpdir=None,
+    console=False,
+    disable_windowed_traceback=False,
+    argv_emulation=False,
+    target_arch=None,
+    codesign_identity=None,
+    entitlements_file=None,
+)
