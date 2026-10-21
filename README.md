@@ -34,7 +34,7 @@
 
 ### 方式一：直接运行（推荐）
 
-前往 [Releases](../../releases) 下载 `C盘清理助手.exe`，双击运行，无需安装 Python。
+前往 [Releases](../../releases) 下载 `C.exe`，双击运行，无需安装 Python。
 
 ### 方式二：从源码运行
 
