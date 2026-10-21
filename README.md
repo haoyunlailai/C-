@@ -6,6 +6,7 @@
 ![Platform](https://img.shields.io/badge/Platform-Windows%2010%2F11-0078D4?logo=windows&logoColor=white)
 ![License](https://img.shields.io/badge/License-MIT-green)
 ![Version](https://img.shields.io/badge/Version-1.0.0-blue)
+[![Release](https://github.com/haoyunlailai/C-/actions/workflows/release.yml/badge.svg)](https://github.com/haoyunlailai/C-/actions/workflows/release.yml)
 
 ## 界面预览
 
@@ -53,6 +54,8 @@ pip install pyinstaller
 pyinstaller "C盘清理助手.spec" --clean --noconfirm
 # 输出：dist/C盘清理助手.exe
 ```
+
+推送 `v*` 标签会触发 GitHub Actions：自动运行测试、构建 exe，并更新 Releases 中的下载附件。
 
 ### 运行测试
 
