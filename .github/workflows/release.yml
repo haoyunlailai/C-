@@ -39,5 +39,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh release upload "小白" "dist/C盘清理助手.exe" --clobber
+          ls -l dist/
           gh release delete-asset "小白" "C.exe" --yes || true
+          gh release upload "小白" "dist/C盘清理助手.exe" --clobber
+          gh release view "小白" --json assets --jq '.assets[].name'
