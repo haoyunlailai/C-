@@ -4,6 +4,8 @@ on:
   push:
     tags:
       - "v*"
+    branches:
+      - main
   workflow_dispatch:
 
 permissions:
@@ -39,7 +41,10 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
+          VERSION=$(python -c "import config; print(config.APP_VERSION)" | tr -d '\r')
+          echo "App version: ${VERSION}"
           ls -l dist/
           gh release delete-asset "小白" "C.exe" --yes || true
           gh release upload "小白" "dist/C盘清理助手.exe" --clobber
-          gh release view "小白" --json assets --jq '.assets[].name'
+          gh release edit "小白" --title "C盘清理助手 v${VERSION}" --notes-file docs/RELEASE_NOTES.md
+          gh release view "小白" --json name,assets --jq '{name: .name, assets: [.assets[].name]}'
