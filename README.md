@@ -122,6 +122,8 @@ pyinstaller "C盘清理助手.spec" --clean --noconfirm
 | Treemap 部分方块消失 | 布局循环中边遍历边 `pop()` 修改列表，导致元素被跳过 | 改为 `while row: pop(0)` 显式消费 |
 | 返回上一层缓慢 | 每次返回都重新扫描目录 | 缓存父节点，命中缓存时直接渲染（~2ms） |
 
+完整的时间线、关键决策与调试根因分析见 [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md)。
+
 ## 已知限制
 
 - 仅支持 Windows（依赖注册表、资源管理器等系统能力）；
